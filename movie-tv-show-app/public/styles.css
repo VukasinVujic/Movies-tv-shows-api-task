@@ -68,3 +68,38 @@
   width: 0.8rem !important;
   height: 0.8rem !important;
 }
+
+.cardDetail {
+  width: 100%;
+  text-align: center;
+  background: white;
+  display: inline-block;
+  margin-top: 3%;
+  margin-bottom: 10%;
+}
+
+.cardDetail > img,
+.cardDetail > p {
+  width: 100%;
+  text-align: left;
+}
+
+.cardDetail > p.title {
+  font-weight: bold;
+  font-size: 3rem;
+  margin-top: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.cardDetailOuter > button {
+  background: white;
+  border: none;
+  padding: 1rem;
+}
+
+@media only screen and (max-width: 600px) {
+  .cardDetail {
+    width: 100%;
+    display: block;
+  }
+}
