@@ -1,6 +1,29 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .main-button {
   background-color: white;
   color: black;
   box-shadow: 5px 5px;
   padding: 15px;
+}
+
+.form-container {
+  margin-top: 15px;
+}
+
+.input-class {
+  width: 100%;
+}
+
+.big-container {
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  height: 50%;
 }
