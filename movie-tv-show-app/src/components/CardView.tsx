@@ -1,9 +1,14 @@
 import React from "react";
 
-const CardView = () => {
+interface Props {
+  title: string;
+  image: string;
+}
+const CardView = (props: Props) => {
   return (
-    <div>
-      <p>Card View</p>
+    <div className="cardView">
+      <img alt="" src={props.image}></img>
+      <p>{props.title}</p>
     </div>
   );
 };

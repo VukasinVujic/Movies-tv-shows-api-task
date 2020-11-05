@@ -11,7 +11,24 @@ function App() {
         <input type="text" className="input-class" placeholder="search" />
       </form>
 
-      <CardView />
+      <div className="center">
+        <CardView
+          title="Najjači film ove godine"
+          image="https://opusteno.rs/slike/2006/09/najvise-nervira-na-netu-841/najvise-nervira-na-netu-tv.jpg"
+        />
+        <CardView
+          title="Najjači film ove godine"
+          image="https://opusteno.rs/slike/2006/09/najvise-nervira-na-netu-841/najvise-nervira-na-netu-tv.jpg"
+        />
+        <CardView
+          title="Najjači film ove godine"
+          image="https://opusteno.rs/slike/2006/09/najvise-nervira-na-netu-841/najvise-nervira-na-netu-tv.jpg"
+        />
+        <CardView
+          title="Najjači film ove godine"
+          image="https://opusteno.rs/slike/2006/09/najvise-nervira-na-netu-841/najvise-nervira-na-netu-tv.jpg"
+        />
+      </div>
       {/* <CardDetail /> */}
     </div>
   );

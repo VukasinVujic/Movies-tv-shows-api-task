@@ -27,3 +27,27 @@
   width: 50%;
   height: 50%;
 }
+
+.center {
+  text-align: center;
+}
+
+.cardView {
+  width: 40%;
+  text-align: center;
+  background: white;
+  display: inline-block;
+  margin: 1%;
+}
+
+.cardView > img,
+.cardView > p {
+  width: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+  .cardView {
+    width: 100%;
+    display: block;
+  }
+}
