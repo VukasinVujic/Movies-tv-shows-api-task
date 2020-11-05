@@ -1,6 +1,8 @@
 import React from "react";
 import CardView from "./components/CardView";
 import CardDetail from "./components/CardDetail";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 function App() {
   return (
@@ -8,7 +10,15 @@ function App() {
       <button className="main-button">Movies</button>
       <button className="main-button">Tv Shows</button>
       <form action="" className="form-container">
-        <input type="text" className="input-class" placeholder="search" />
+        <span>
+          <FontAwesomeIcon
+            icon={faSearch}
+            className="icon-class"
+          ></FontAwesomeIcon>
+        </span>
+        <span>
+          <input type="text" className="input-class" placeholder="search" />
+        </span>
       </form>
 
       <div className="center">
