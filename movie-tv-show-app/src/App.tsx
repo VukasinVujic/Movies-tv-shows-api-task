@@ -32,29 +32,31 @@ function App() {
   const [isMovie, setIsMovie] = useState(true);
 
   // api key a7591b103e58fc4674393468dd6a570b
-  // https://api.themoviedb.org/3/tv/top_rated?api_key=a7591b103e58fc4674393468dd6a570b&language=en-US&page=1
+
+  const showTop10 = async () => {
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/${
+        isMovie ? "movie" : "tv"
+      }/top_rated?api_key=a7591b103e58fc4674393468dd6a570b&language=en-US&page=1`
+    );
+    const responseArray: [] = response.data.results;
+    if (!isMovie) {
+      responseArray.forEach((element) => {
+        element["title"] = element["name"];
+      });
+    }
+    const top10 = responseArray.slice(0, 10);
+    setDataArray(top10);
+  };
 
   useEffect(() => {
-    (async (queryParam) => {
-      var type = isMovie ? "movie" : "tv";
-      const response = await axios.get(
-        `https://api.themoviedb.org/3/${type}/top_rated?api_key=a7591b103e58fc4674393468dd6a570b&language=en-US&page=1`
-      );
-      const responseArray: [] = response.data.results;
-      if (!isMovie) {
-        responseArray.forEach((element) => {
-          element["title"] = element["name"];
-        });
-      }
-      const top10 = responseArray.slice(0, 10);
-      setDataArray(top10);
-    })(queryParam);
+    showTop10();
   }, [isMovie]);
 
   var showContent = () => {
     // console.log({ itemIndex });
     // console.log(dataArray[itemIndex]);
-    console.log(dataArray);
+    // console.log(dataArray);
 
     if (itemIndex < 0) {
       return (
@@ -76,6 +78,8 @@ function App() {
         </div>
       );
     } else {
+      // when you write in search and immediately click on picture of movie/tv-show, cancle search
+      clearTimeout(timer);
       var item = dataArray[itemIndex] as Movie;
       return (
         <CardDetail
@@ -91,38 +95,56 @@ function App() {
   };
 
   const changeOutput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log((event.target as HTMLInputElement).value);
+    console.log((event.target as HTMLInputElement).value.length);
 
     clearTimeout(timer);
-    timer = setTimeout(async () => {
-      const response = await axios.get(
-        `https://api.themoviedb.org/3/search/${
-          isMovie ? "movie" : "tv"
-        }?api_key=a7591b103e58fc4674393468dd6a570b&language=en-US&query=${
-          (event.target as HTMLInputElement).value
-        }&page=1&include_adult=false`
-      );
+    if ((event.target as HTMLInputElement).value.length > 3) {
+      timer = setTimeout(async () => {
+        const response = await axios.get(
+          `https://api.themoviedb.org/3/search/${
+            isMovie ? "movie" : "tv"
+          }?api_key=a7591b103e58fc4674393468dd6a570b&language=en-US&query=${
+            (event.target as HTMLInputElement).value
+          }&page=1&include_adult=false`
+        );
 
-      console.log("inside timeout");
-      // console.log(response);
-      const responseArray: [] = response.data.results;
-      if (!isMovie) {
-        responseArray.forEach((element) => {
-          element["title"] = element["name"];
-        });
-      }
-      setDataArray(responseArray);
-    }, 1000);
+        console.log("inside timeout");
+        // console.log(response);
+        const responseArray: [] = response.data.results;
+        if (!isMovie) {
+          responseArray.forEach((element) => {
+            element["title"] = element["name"];
+          });
+        }
+        setDataArray(responseArray);
+      }, 1000);
+    } else {
+      showTop10();
+    }
+    setQueryParam((event.target as HTMLInputElement).value);
   };
+
+  // const changeAndSearch = (movieOrNot: boolean) => {
+  //   setIsMovie(movieOrNot);
+  //   changeOutput();
+  // };
 
   var showSearch = () => {
     if (itemIndex < 0) {
       return (
         <div>
-          <button className="main-button" onClick={() => setIsMovie(true)}>
+          <button
+            className="main-button"
+            style={{ background: isMovie ? "blue" : "white" }}
+            onClick={() => setIsMovie(true)}
+          >
             Movies
           </button>
-          <button className="main-button" onClick={() => setIsMovie(false)}>
+          <button
+            className="main-button"
+            style={{ background: isMovie ? "white" : "blue" }}
+            onClick={() => setIsMovie(false)}
+          >
             Tv Shows
           </button>
           <form
@@ -141,6 +163,7 @@ function App() {
                 className="input-class"
                 placeholder="search"
                 onChange={(event) => changeOutput(event)}
+                value={queryParam}
               />
             </span>
           </form>

@@ -1,4 +1,6 @@
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
   title: string;
@@ -10,6 +12,12 @@ interface Props {
 const CardDetail = (props: Props) => {
   return (
     <div className="cardDetailOuter">
+      <span>
+        <FontAwesomeIcon
+          icon={faAngleLeft}
+          className="icon-class"
+        ></FontAwesomeIcon>
+      </span>
       <button onClick={props.onClick}> Back </button>
       <div className="cardDetail">
         <img alt="" src={props.image}></img>
