@@ -29,22 +29,27 @@ function App() {
   const [queryParam, setQueryParam] = useState("");
   const [dataArray, setDataArray] = useState([]);
   const [itemIndex, setItemIndex] = useState(-1);
+  const [isMovie, setIsMovie] = useState(true);
 
   // api key a7591b103e58fc4674393468dd6a570b
   // https://api.themoviedb.org/3/tv/top_rated?api_key=a7591b103e58fc4674393468dd6a570b&language=en-US&page=1
 
   useEffect(() => {
-    // setTimeout(() => {
     (async (queryParam) => {
+      var type = isMovie ? "movie" : "tv";
       const response = await axios.get(
-        `https://api.themoviedb.org/3/movie/top_rated?api_key=a7591b103e58fc4674393468dd6a570b&language=en-US&page=1`
+        `https://api.themoviedb.org/3/${type}/top_rated?api_key=a7591b103e58fc4674393468dd6a570b&language=en-US&page=1`
       );
       const responseArray: [] = response.data.results;
+      if (!isMovie) {
+        responseArray.forEach((element) => {
+          element["title"] = element["name"];
+        });
+      }
       const top10 = responseArray.slice(0, 10);
       setDataArray(top10);
     })(queryParam);
-    // }, 3000);
-  }, []);
+  }, [isMovie]);
 
   var showContent = () => {
     // console.log({ itemIndex });
@@ -91,40 +96,64 @@ function App() {
     clearTimeout(timer);
     timer = setTimeout(async () => {
       const response = await axios.get(
-        `https://api.themoviedb.org/3/search/movie?api_key=a7591b103e58fc4674393468dd6a570b&language=en-US&query=${
+        `https://api.themoviedb.org/3/search/${
+          isMovie ? "movie" : "tv"
+        }?api_key=a7591b103e58fc4674393468dd6a570b&language=en-US&query=${
           (event.target as HTMLInputElement).value
         }&page=1&include_adult=false`
       );
 
       console.log("inside timeout");
       // console.log(response);
-      setDataArray(response.data.results);
+      const responseArray: [] = response.data.results;
+      if (!isMovie) {
+        responseArray.forEach((element) => {
+          element["title"] = element["name"];
+        });
+      }
+      setDataArray(responseArray);
     }, 1000);
+  };
+
+  var showSearch = () => {
+    if (itemIndex < 0) {
+      return (
+        <div>
+          <button className="main-button" onClick={() => setIsMovie(true)}>
+            Movies
+          </button>
+          <button className="main-button" onClick={() => setIsMovie(false)}>
+            Tv Shows
+          </button>
+          <form
+            onSubmit={(event) => event.preventDefault()}
+            className="form-container"
+          >
+            <span>
+              <FontAwesomeIcon
+                icon={faSearch}
+                className="icon-class"
+              ></FontAwesomeIcon>
+            </span>
+            <span>
+              <input
+                type="text"
+                className="input-class"
+                placeholder="search"
+                onChange={(event) => changeOutput(event)}
+              />
+            </span>
+          </form>
+        </div>
+      );
+    } else {
+      return "";
+    }
   };
 
   return (
     <div className="big-container">
-      <button className="main-button">Movies</button>
-      <button className="main-button">Tv Shows</button>
-      <form
-        onSubmit={(event) => event.preventDefault()}
-        className="form-container"
-      >
-        <span>
-          <FontAwesomeIcon
-            icon={faSearch}
-            className="icon-class"
-          ></FontAwesomeIcon>
-        </span>
-        <span>
-          <input
-            type="text"
-            className="input-class"
-            placeholder="search"
-            onChange={(event) => changeOutput(event)}
-          />
-        </span>
-      </form>
+      {showSearch()}
       {showContent()}
     </div>
   );
