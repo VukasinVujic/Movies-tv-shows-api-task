@@ -6,6 +6,8 @@ import CardDetail from "./components/CardDetail";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
+let timer: NodeJS.Timeout;
+
 function App() {
   const [queryParam, setQueryParam] = useState("");
   const [dataArray, setDataArray] = useState([]);
@@ -19,20 +21,33 @@ function App() {
       const response = await axios.get(
         `https://api.themoviedb.org/3/movie/top_rated?api_key=a7591b103e58fc4674393468dd6a570b&language=en-US&page=1`
       );
-      const responsArray: [] = response.data.results;
-      responsArray.forEach((element) => {
-        console.log(element);
-      });
-      setDataArray(response.data);
+      const responseArray: [] = response.data.results;
+      const top10 = responseArray.slice(0, 10);
+      setDataArray(top10);
     })(queryParam);
     // }, 3000);
-  }, [queryParam]);
+  }, []);
+
+  const changeOutput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log((event.target as HTMLInputElement).value);
+
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      console.log("inside timeout");
+      const response = axios.get(
+        `https://api.themoviedb.org/3/movie/top_rated?api_key=a7591b103e58fc4674393468dd6a570b&language=en-US&page=1`
+      );
+    }, 1000);
+  };
 
   return (
     <div className="big-container">
       <button className="main-button">Movies</button>
       <button className="main-button">Tv Shows</button>
-      <form action="" className="form-container">
+      <form
+        onSubmit={(event) => event.preventDefault()}
+        className="form-container"
+      >
         <span>
           <FontAwesomeIcon
             icon={faSearch}
@@ -40,7 +55,12 @@ function App() {
           ></FontAwesomeIcon>
         </span>
         <span>
-          <input type="text" className="input-class" placeholder="search" />
+          <input
+            type="text"
+            className="input-class"
+            placeholder="search"
+            onChange={(event) => changeOutput(event)}
+          />
         </span>
       </form>
 
