@@ -8,9 +8,27 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 let timer: NodeJS.Timeout;
 
+interface Movie {
+  popularity: Number;
+  id: Number;
+  video: Boolean;
+  vote_count: Number;
+  vote_average: Number;
+  title: string;
+  release_date: string;
+  original_language: string;
+  original_title: string;
+  genre_ids: Array<Number>;
+  backdrop_path: string;
+  adult: Boolean;
+  overview: string;
+  poster_path: string;
+}
+
 function App() {
   const [queryParam, setQueryParam] = useState("");
   const [dataArray, setDataArray] = useState([]);
+  const [itemIndex, setItemIndex] = useState(-1);
 
   // api key a7591b103e58fc4674393468dd6a570b
   // https://api.themoviedb.org/3/tv/top_rated?api_key=a7591b103e58fc4674393468dd6a570b&language=en-US&page=1
@@ -27,6 +45,44 @@ function App() {
     })(queryParam);
     // }, 3000);
   }, []);
+
+  var showContent = () => {
+    console.log({ itemIndex });
+    console.log(dataArray[itemIndex]);
+
+    if (itemIndex < 0) {
+      return (
+        <div className="center">
+          {dataArray.map((value: Movie, index) => {
+            return (
+              <CardView
+                onClick={() => {
+                  setItemIndex(index);
+                }}
+                title={value.title}
+                image={
+                  "https://image.tmdb.org/t/p/w220_and_h330_face" +
+                  value.poster_path
+                }
+              />
+            );
+          })}
+        </div>
+      );
+    } else {
+      var item = dataArray[itemIndex] as Movie;
+      return (
+        <CardDetail
+          onClick={() => setItemIndex(-1)}
+          title={item.title}
+          image={
+            "https://image.tmdb.org/t/p/w220_and_h330_face" + item.poster_path
+          }
+          text={item.overview}
+        />
+      );
+    }
+  };
 
   const changeOutput = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log((event.target as HTMLInputElement).value);
@@ -63,30 +119,7 @@ function App() {
           />
         </span>
       </form>
-
-      <div className="center">
-        <CardView
-          title="Najjači film ove godine"
-          image="https://opusteno.rs/slike/2006/09/najvise-nervira-na-netu-841/najvise-nervira-na-netu-tv.jpg"
-        />
-        <CardView
-          title="Najjači film ove godine"
-          image="https://opusteno.rs/slike/2006/09/najvise-nervira-na-netu-841/najvise-nervira-na-netu-tv.jpg"
-        />
-        <CardView
-          title="Najjači film ove godine"
-          image="https://opusteno.rs/slike/2006/09/najvise-nervira-na-netu-841/najvise-nervira-na-netu-tv.jpg"
-        />
-        <CardView
-          title="Najjači film ove godine"
-          image="https://opusteno.rs/slike/2006/09/najvise-nervira-na-netu-841/najvise-nervira-na-netu-tv.jpg"
-        />
-      </div>
-      <CardDetail
-        title="Najjači film ove godine"
-        image="https://opusteno.rs/slike/2006/09/najvise-nervira-na-netu-841/najvise-nervira-na-netu-tv.jpg"
-        text="Fusce commodo.  Vestibulum convallis, lorem a tempus semper, dui dui euismod elit, vitae placerat urna tortor vitae lacus.  Nullam libero mauris, consequat quis, varius et, dictum id, arcu.  Mauris mollis tincidunt felis.  Aliquam feugiat tellus ut neque.  Nulla facilisis, risus a rhoncus fermentum, tellus tellus lacinia purus, et dictum nunc justo sit amet elit.  Aliquam erat volutpat.  Nunc eleifend leo vitae magna.  In id erat non orci commodo lobortis.  Proin neque massa, cursus ut, gravida ut, lobortis eget, lacus.  Sed diam.  Praesent fermentum tempor tellus."
-      />
+      {showContent()}
     </div>
   );
 }
