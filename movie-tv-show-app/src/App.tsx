@@ -1,10 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+
+import axios from "axios";
 import CardView from "./components/CardView";
 import CardDetail from "./components/CardDetail";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 function App() {
+  const [queryParam, setQueryParam] = useState("");
+  const [dataArray, setDataArray] = useState([]);
+
+  // api key a7591b103e58fc4674393468dd6a570b
+  // https://api.themoviedb.org/3/tv/top_rated?api_key=a7591b103e58fc4674393468dd6a570b&language=en-US&page=1
+
+  useEffect(() => {
+    // setTimeout(() => {
+    (async (queryParam) => {
+      const response = await axios.get(
+        `https://api.themoviedb.org/3/movie/top_rated?api_key=a7591b103e58fc4674393468dd6a570b&language=en-US&page=1`
+      );
+      const responsArray: [] = response.data.results;
+      responsArray.forEach((element) => {
+        console.log(element);
+      });
+      setDataArray(response.data);
+    })(queryParam);
+    // }, 3000);
+  }, [queryParam]);
+
   return (
     <div className="big-container">
       <button className="main-button">Movies</button>
