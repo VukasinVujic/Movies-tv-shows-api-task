@@ -47,8 +47,9 @@ function App() {
   }, []);
 
   var showContent = () => {
-    console.log({ itemIndex });
-    console.log(dataArray[itemIndex]);
+    // console.log({ itemIndex });
+    // console.log(dataArray[itemIndex]);
+    console.log(dataArray);
 
     if (itemIndex < 0) {
       return (
@@ -88,11 +89,16 @@ function App() {
     console.log((event.target as HTMLInputElement).value);
 
     clearTimeout(timer);
-    timer = setTimeout(() => {
-      console.log("inside timeout");
-      const response = axios.get(
-        `https://api.themoviedb.org/3/movie/top_rated?api_key=a7591b103e58fc4674393468dd6a570b&language=en-US&page=1`
+    timer = setTimeout(async () => {
+      const response = await axios.get(
+        `https://api.themoviedb.org/3/search/movie?api_key=a7591b103e58fc4674393468dd6a570b&language=en-US&query=${
+          (event.target as HTMLInputElement).value
+        }&page=1&include_adult=false`
       );
+
+      console.log("inside timeout");
+      // console.log(response);
+      setDataArray(response.data.results);
     }, 1000);
   };
 
