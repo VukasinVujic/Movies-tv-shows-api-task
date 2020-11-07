@@ -5,13 +5,16 @@ interface Props {
   image: string;
   onClick: (event: React.MouseEvent<HTMLDivElement>) => void;
 }
-const CardView = (props: Props) => {
-  return (
-    <div className="cardView" onClick={props.onClick}>
-      <img alt="not loaded" src={props.image}></img>
-      <p>{props.title}</p>
-    </div>
-  );
-};
+
+class CardView extends React.Component<Props> {
+  render() {
+    return (
+      <div className="cardView" onClick={this.props.onClick}>
+        <img alt="not loaded" src={this.props.image}></img>
+        <p>{this.props.title}</p>
+      </div>
+    );
+  }
+}
 
 export default CardView;
