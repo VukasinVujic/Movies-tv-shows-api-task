@@ -8,7 +8,7 @@ interface Props {
 const CardView = (props: Props) => {
   return (
     <div className="cardView" onClick={props.onClick}>
-      <img alt="" src={props.image}></img>
+      <img alt="not loaded" src={props.image}></img>
       <p>{props.title}</p>
     </div>
   );

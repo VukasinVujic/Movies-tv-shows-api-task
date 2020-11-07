@@ -29,18 +29,18 @@ function App() {
   const [queryParam, setQueryParam] = useState("");
   const [dataArray, setDataArray] = useState([]);
   const [itemIndex, setItemIndex] = useState(-1);
-  const [isMovie, setIsMovie] = useState(true);
+  const [isMovie, setIsMovie] = useState(false);
 
   // api key a7591b103e58fc4674393468dd6a570b
 
-  const showTop10 = async () => {
+  const showTop10 = async (arg = isMovie) => {
     const response = await axios.get(
       `https://api.themoviedb.org/3/${
-        isMovie ? "movie" : "tv"
+        arg ? "movie" : "tv"
       }/top_rated?api_key=a7591b103e58fc4674393468dd6a570b&language=en-US&page=1`
     );
     const responseArray: [] = response.data.results;
-    if (!isMovie) {
+    if (!arg) {
       responseArray.forEach((element) => {
         element["title"] = element["name"];
       });
@@ -51,13 +51,10 @@ function App() {
 
   useEffect(() => {
     showTop10();
-  }, [isMovie]);
+  }, []);
 
   var showContent = () => {
-    // console.log({ itemIndex });
-    // console.log(dataArray[itemIndex]);
-    // console.log(dataArray);
-
+    // if user didn't clik on any movie/tv-show , show all the movies
     if (itemIndex < 0) {
       return (
         <div className="center">
@@ -80,15 +77,18 @@ function App() {
     } else {
       // when you write in search and immediately click on picture of movie/tv-show, cancle search
       clearTimeout(timer);
-      var item = dataArray[itemIndex] as Movie;
+      let item = dataArray[itemIndex] as Movie;
       return (
         <CardDetail
+          // for the back button
           onClick={() => setItemIndex(-1)}
           title={item.title}
           image={
             "https://image.tmdb.org/t/p/w220_and_h330_face" + item.poster_path
           }
           text={item.overview}
+          isMovie={isMovie}
+          id={item.id}
         />
       );
     }
@@ -98,6 +98,7 @@ function App() {
     argIsMovie: boolean = isMovie,
     argString: string = ""
   ) => {
+    // check if you switch from movies button to tv-show buttons, if did, change isMovie to opposite,
     if (argIsMovie !== isMovie) {
       setIsMovie(argIsMovie);
     }
@@ -109,7 +110,6 @@ function App() {
             argIsMovie ? "movie" : "tv"
           }?api_key=a7591b103e58fc4674393468dd6a570b&language=en-US&query=${argString}&page=1&include_adult=false`
         );
-        console.log("inside timeout");
         const responseArray: [] = response.data.results;
         if (!argIsMovie) {
           responseArray.forEach((element) => {
@@ -119,47 +119,16 @@ function App() {
         setDataArray(responseArray);
       }, 1000);
     } else {
-      showTop10();
+      showTop10(argIsMovie);
     }
   };
 
   const changeOutput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log((event.target as HTMLInputElement).value.length);
-
     clearTimeout(timer);
     let inputString = (event.target as HTMLInputElement).value;
-
-    // if ((event.target as HTMLInputElement).value.length > 3) {
-    //   timer = setTimeout(async () => {
-    //     const response = await axios.get(
-    //       `https://api.themoviedb.org/3/search/${
-    //         isMovie ? "movie" : "tv"
-    //       }?api_key=a7591b103e58fc4674393468dd6a570b&language=en-US&query=${
-    //         (event.target as HTMLInputElement).value
-    //       }&page=1&include_adult=false`
-    //     );
-
-    //     console.log("inside timeout");
-    //     // console.log(response);
-    //     const responseArray: [] = response.data.results;
-    //     if (!isMovie) {
-    //       responseArray.forEach((element) => {
-    //         element["title"] = element["name"];
-    //       });
-    //     }
-    //     setDataArray(responseArray);
-    //   }, 1000);
-    // } else {
-    //   showTop10();
-    // }
-    makeSearch(undefined, inputString);
-    setQueryParam((event.target as HTMLInputElement).value);
+    makeSearch(isMovie, inputString);
+    setQueryParam(inputString);
   };
-
-  // const changeAndSearch = (movieOrNot: boolean) => {
-  //   setIsMovie(movieOrNot);
-  //   changeOutput();
-  // };
 
   var showSearch = () => {
     if (itemIndex < 0) {
